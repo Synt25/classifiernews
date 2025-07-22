@@ -1,62 +1,68 @@
 import streamlit as st
-import pandas as pd
 import pickle
 
-# Load model dan vectorizer
-with open("svm_model.pkl", "rb") as model_file:
+# Load model dan TF-IDF vectorizer
+with open("best_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
 
 with open("tfidf_vectorizer.pkl", "rb") as vec_file:
     vectorizer = pickle.load(vec_file)
 
-st.title("📰 Fake News Detection App")
+# === Tampilan Utama ===
+st.set_page_config(page_title="Fake News Detector", page_icon="🧠", layout="centered")
+st.markdown(
+    "<h1 style='text-align: center; color: #6c5ce7;'>📰 Fake News Detection</h1>",
+    unsafe_allow_html=True
+)
+st.markdown("<p style='text-align: center; color: #a29bfe;'>Deteksi apakah sebuah berita palsu atau valid dengan cepat.</p>", unsafe_allow_html=True)
 
-st.subheader("Pilih metode input:")
-mode = st.radio("", ["Input Teks Manual", "Pilih Berita dari Daftar", "Upload File CSV"])
+# === Pilihan Input ===
+mode = st.radio("Pilih metode input:", ["📝 Input Teks Manual", "📚 Pilih dari Contoh Berita"])
 
-# Metadata input
-st.markdown("### Informasi Tambahan (metadata)")
-country = st.selectbox("Asal negara berita", ["USA", "UK", "Indonesia", "India", "Other"])
-category = st.selectbox("Kategori berita", ["Politics", "Health", "Technology", "Entertainment", "Other"])
-st.markdown(f"🗺️ Negara: `{country}` | 📚 Kategori: `{category}`")
+# === Metadata sederhana ===
+st.markdown("#### Informasi Tambahan")
+col1, col2 = st.columns(2)
+with col1:
+    country = st.selectbox("🌍 Negara:", ["USA", "UK", "Indonesia", "India", "Other"])
+with col2:
+    category = st.selectbox("📖 Kategori:", ["Politics", "Health", "Tech", "Entertainment", "Other"])
 
-# Contoh berita
+# === Inputan Berita ===
 sample_news = {
     "Biden signs new climate bill": "President Biden signed a new climate bill into law today...",
     "Aliens discovered in Indonesia": "Aliens were found walking around in Jakarta last night...",
-    "NASA announces Mars mission": "NASA has confirmed the next manned mission to Mars will launch in 2026..."
+    "NASA announces Mars mission": "NASA confirmed next manned Mars mission in 2026..."
 }
 
-text = ""
+text_input = ""
 
-if mode == "Input Teks Manual":
-    text = st.text_area("Masukkan teks berita:")
-
-elif mode == "Pilih Berita dari Daftar":
-    title = st.selectbox("Pilih judul berita:", list(sample_news.keys()))
-    text = sample_news[title]
-    st.write("Isi berita:")
-    st.info(text)
-
-elif mode == "Upload File CSV":
-    uploaded_file = st.file_uploader("Upload file CSV (dengan kolom 'text')", type="csv")
-    if uploaded_file:
-        df = pd.read_csv(uploaded_file)
-        if "text" in df.columns:
-            X_batch = vectorizer.transform(df["text"])
-            df["prediction"] = model.predict(X_batch)
-            st.write("Hasil prediksi:")
-            st.dataframe(df[["text", "prediction"]])
+if mode == "📝 Input Teks Manual":
+    text_input = st.text_area("Masukkan teks berita:", height=180)
+    if st.button("🔍 Prediksi"):
+        if text_input.strip():
+            vectorized = vectorizer.transform([text_input])
+            pred = model.predict(vectorized)[0]
+            st.markdown(
+                f"<div style='background-color: #ffeaa7; padding: 15px; border-radius: 10px;'>"
+                f"<h4>Hasil Prediksi: <span style='color: #d63031'>{pred.upper()}</span></h4></div>",
+                unsafe_allow_html=True
+            )
         else:
-            st.error("Kolom 'text' tidak ditemukan di file.")
+            st.warning("Teks tidak boleh kosong.")
 
-if text and mode != "Upload File CSV":
-    vec = vectorizer.transform([text])
-    prediction = model.predict(vec)[0]
-    st.markdown("### Hasil Prediksi:")
-    st.success(f"Berita ini terdeteksi sebagai **{prediction.upper()}**")
+elif mode == "📚 Pilih dari Contoh Berita":
+    title = st.selectbox("Pilih judul berita:", list(sample_news.keys()))
+    text_input = sample_news[title]
+    st.info(text_input)
 
-    # Tambahan info metadata
-    st.markdown("### Rincian Input")
-    st.write(f"🗺️ Negara: **{country}**")
-    st.write(f"📚 Kategori: **{category}**")
+    if st.button("🔍 Prediksi"):
+        vectorized = vectorizer.transform([text_input])
+        pred = model.predict(vectorized)[0]
+        st.markdown(
+            f"<div style='background-color: #a29bfe; padding: 15px; border-radius: 10px;'>"
+            f"<h4>Hasil Prediksi: <span style='color: white'>{pred.upper()}</span></h4></div>",
+            unsafe_allow_html=True
+        )
+
+# === Footer ===
+st.markdown("<hr><small style='color:gray;'>Built with ❤️ using Streamlit</small>", unsafe_allow_html=True)
