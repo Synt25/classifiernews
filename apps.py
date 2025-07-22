@@ -2,7 +2,7 @@ import streamlit as st
 import pickle
 
 # Load model dan TF-IDF vectorizer
-with open("best_model.pkl", "rb") as model_file:
+with open("svm_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
 
 with open("tfidf_vectorizer.pkl", "rb") as vec_file:
