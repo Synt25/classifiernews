@@ -1,78 +1,86 @@
 import streamlit as st
 import pickle
+import os
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-# Load model & vectorizer
+# Load model dan vectorizer
 with open("svm_model.pkl", "rb") as f:
     model = pickle.load(f)
 with open("tfidf_vectorizer.pkl", "rb") as f:
-    vectorizer = pickle.load(f)
+    tfidf = pickle.load(f)
 
-# === Config App ===
-st.set_page_config(page_title="Fake News Detection", page_icon="📰", layout="centered")
-st.markdown(
-    "<h1 style='text-align: center; color: #6c5ce7;'>📰 Fake News Detection</h1>",
-    unsafe_allow_html=True
-)
-st.markdown(
-    "<p style='text-align: center; color: #a29bfe;'>Deteksi apakah sebuah berita palsu atau nyata berdasarkan isi teks.</p>",
-    unsafe_allow_html=True
-)
+st.set_page_config(page_title="Fake News Detector",page_icon="📰", layout="centered")
+st.markdown("<h1 style='text-align:center;'>📰 Fake News Detection</h1>", unsafe_allow_html=True)
 
-# === Mode Input ===
-mode = st.radio("Pilih metode input:", ["📝 Input Teks Manual", "📚 Pilih dari Contoh Berita"])
-
-# === Contoh berita ===
-sample_news = {
-    "Biden signs new climate bill": "President Biden signed a new climate bill into law today...",
-    "Aliens discovered in Indonesia": "Aliens were found walking around in Jakarta last night...",
-    "NASA announces Mars mission": "NASA confirmed next manned Mars mission in 2026..."
-}
-
-text_input = ""
-
-if mode == "📝 Input Teks Manual":
-    text_input = st.text_area("Masukkan teks berita:", height=180)
-elif mode == "📚 Pilih dari Contoh Berita":
-    title = st.selectbox("Pilih judul berita:", list(sample_news.keys()))
-    text_input = sample_news[title]
-    st.info(text_input)
-
-# === Prediksi ===
-if st.button("🔍 Prediksi"):
-    if text_input.strip():
-        vectorized = vectorizer.transform([text_input])
-        pred = model.predict(vectorized)[0]
-
-        # Background warna sesuai hasil
-        if pred.lower() == "fake":
-            bg_color = "#fab1a0"  # pink pastel
-            text_color = "#d63031"
-        else:
-            bg_color = "#d0f0c0"  # mint
-            text_color = "#00b894"
-
-        st.markdown(
-            f"<div style='background-color: {bg_color}; padding: 20px; border-radius: 10px;'>"
-            f"<h4 style='color: {text_color};'>Hasil Prediksi: {pred.upper()}</h4></div>",
-            unsafe_allow_html=True
-        )
-
-        # Metadata ditampilkan setelah prediksi
-        st.markdown("#### 🧾 Informasi Tambahan")
-        col1, col2 = st.columns(2)
-        with col1:
-            country = st.selectbox("🌍 Asal Negara:", ["USA", "UK", "Indonesia", "India", "Other"], key="country_post")
-        with col2:
-            category = st.selectbox("📚 Kategori Berita:", ["Politics", "Health", "Tech", "Entertainment", "Other"], key="category_post")
-
-        # Tambahkan ringkasan metadata
-        st.markdown(
-            f"<p style='margin-top:10px;'>📌 <b>Negara:</b> <code>{country}</code> &nbsp;&nbsp; | &nbsp;&nbsp;"
-            f"<b>Kategori:</b> <code>{category}</code></p>",
-            unsafe_allow_html=True
-        )
+# Fungsi deteksi metadata otomatis
+def detect_country(text):
+    text = text.lower()
+    if any(loc in text for loc in ["jakarta", "indonesia"]):
+        return "Indonesia"
+    elif any(loc in text for loc in ["white house", "biden", "trump", "usa"]):
+        return "USA"
+    elif any(loc in text for loc in ["london", "britain", "uk"]):
+        return "UK"
+    elif any(loc in text for loc in ["delhi", "india", "modi"]):
+        return "India"
     else:
-        st.warning("Teks berita tidak boleh kosong!")
+        return "Other"
 
-# === Footer ===
-st.markdown("<hr><small style='color:gray;'>Built with ❤️ using Streamlit</small>", unsafe_allow_html=True)
+def detect_category(text):
+    text = text.lower()
+    if any(kw in text for kw in ["president", "government", "election", "policy"]):
+        return "Politics"
+    elif any(kw in text for kw in ["vaccine", "covid", "doctor", "hospital", "virus"]):
+        return "Health"
+    elif any(kw in text for kw in ["startup", "ai", "software", "technology", "robot"]):
+        return "Technology"
+    elif any(kw in text for kw in ["movie", "actor", "singer", "tv", "music"]):
+        return "Entertainment"
+    else:
+        return "Other"
+
+# Input pilihan pengguna
+option = st.radio("Pilih metode input:", ["Ketik Teks Manual", "Pilih dari Daftar Berita"])
+
+if option == "Ketik Teks Manual":
+    text_input = st.text_area("Tulis berita yang ingin diprediksi:")
+else:
+    sample_news = [
+        "President Biden signs new technology funding bill.",
+        "A local celebrity was seen in downtown Jakarta.",
+        "Researchers discovered a new AI model for medical purposes.",
+        "The government faces backlash over election results."
+    ]
+    text_input = st.selectbox("Pilih salah satu berita:", sample_news)
+
+if st.button("🔍 Prediksi"):
+    if text_input:
+        text_tfidf = tfidf.transform([text_input])
+        pred = model.predict(text_tfidf)[0]
+
+        # Deteksi metadata otomatis
+        country = detect_country(text_input)
+        category = detect_category(text_input)
+
+        # Tampilkan hasil prediksi
+        if pred == "FAKE":
+            color = "#ffc0cb"  # pastel pink
+            label = "🚨 Berita ini terdeteksi sebagai: <b>FAKE</b>"
+        else:
+            color = "#ccffcc"  # mint green
+            label = "✅ Berita ini terdeteksi sebagai: <b>REAL</b>"
+
+        st.markdown(f"""
+            <div style='background-color:{color};padding:15px;border-radius:10px'>
+            <h3 style='text-align:center;'>{label}</h3></div>
+        """, unsafe_allow_html=True)
+
+        # Tampilkan metadata
+        st.markdown("### 🧾 Informasi Tambahan (Deteksi Otomatis)")
+        st.markdown(
+            f"""
+            <p>📍 <b>Negara Asal:</b> <code>{country}</code><br>
+            📚 <b>Kategori:</b> <code>{category}</code></p>
+            """, unsafe_allow_html=True)
+    else:
+        st.warning("Silakan masukkan atau pilih teks berita terlebih dahulu.")
