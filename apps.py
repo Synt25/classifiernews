@@ -25,4 +25,3 @@ if st.button("Prediksi"):
             st.success("✅ Prediksi: REAL (asli)")
         else:
             st.error("⚠️ Prediksi: FAKE (palsu)")
->
