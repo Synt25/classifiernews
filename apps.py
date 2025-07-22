@@ -8,7 +8,7 @@ with open("tfidf_vectorizer.pkl", "rb") as f:
     vectorizer = pickle.load(f)
 
 # === Config App ===
-st.set_page_config(page_title="Fake News Detection", page_icon="🧠", layout="centered")
+st.set_page_config(page_title="Fake News Detection", page_icon="📰", layout="centered")
 st.markdown(
     "<h1 style='text-align: center; color: #6c5ce7;'>🧠 Fake News Detection</h1>",
     unsafe_allow_html=True
