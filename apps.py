@@ -47,9 +47,9 @@ if option == "Ketik Teks Manual":
 else:
     sample_news = [
         "A popular Facebook post claims that drinking lemon water cures cancer.",
+        "New Senate majority leader’s main goal for GOP",
         "NASA announces new discoveries from the James Webb Space Telescope.",
         "The President signed a bill aiming to reduce student loan debt across the country.",
-        "New Senate majority leader’s main goal for GOP",
         "Trump takes on Cruz, but lightly."
     ]
     text_input = st.selectbox("Pilih salah satu berita:", sample_news)
