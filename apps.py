@@ -46,10 +46,11 @@ if option == "Ketik Teks Manual":
     text_input = st.text_area("Tulis berita yang ingin diprediksi:")
 else:
     sample_news = [
-        "President Biden signs new technology funding bill.",
-        "A local celebrity was seen in downtown Jakarta.",
-        "Researchers discovered a new AI model for medical purposes.",
-        "The government faces backlash over election results."
+        "A popular Facebook post claims that drinking lemon water cures cancer.",
+        "NASA announces new discoveries from the James Webb Space Telescope.",
+        "The President signed a bill aiming to reduce student loan debt across the country.",
+        "The Syrian civil war has displaced millions, causing a major humanitarian crisis",
+        "Donald Trump’s Shockingly Weak Delegate Game Somehow Got Even Worse."
     ]
     text_input = st.selectbox("Pilih salah satu berita:", sample_news)
 
