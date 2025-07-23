@@ -50,7 +50,7 @@ else:
         "NASA announces new discoveries from the James Webb Space Telescope.",
         "The President signed a bill aiming to reduce student loan debt across the country.",
         "The Syrian civil war has displaced millions, causing a major humanitarian crisis",
-        "Donald Trump’s Shockingly Weak Delegate Game Somehow Got Even Worse."
+        "Trump takes on Cruz, but lightly."
     ]
     text_input = st.selectbox("Pilih salah satu berita:", sample_news)
 
