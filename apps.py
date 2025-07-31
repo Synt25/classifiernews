@@ -91,7 +91,6 @@ if st.button("🔍 Prediksi"):
             """, unsafe_allow_html=True)
     else:
         st.warning("Silakan masukkan atau pilih teks berita terlebih dahulu.")
-
-     st.markdown(footer, unsafe_allow_html=True)
+st.markdown(footer, unsafe_allow_html=True)
 
 
