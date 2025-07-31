@@ -85,3 +85,11 @@ if st.button("🔍 Prediksi"):
             """, unsafe_allow_html=True)
     else:
         st.warning("Silakan masukkan atau pilih teks berita terlebih dahulu.")
+
+footer = """
+<hr style="margin-top:30px; border-top: 1px solid #bbb;">
+<div style="text-align:center; color:#888888; font-size:14px;">
+    Developed by <strong>Dsloven Group 7</strong> – DS Batch 49
+</div>
+"""
+
