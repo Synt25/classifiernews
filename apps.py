@@ -86,6 +86,7 @@ if st.button("🔍 Prediksi"):
     else:
         st.warning("Silakan masukkan atau pilih teks berita terlebih dahulu.")
 
+     st.markdown(footer, unsafe_allow_html=True)
 footer = """
 <hr style="margin-top:30px; border-top: 1px solid #bbb;">
 <div style="text-align:center; color:#888888; font-size:14px;">
