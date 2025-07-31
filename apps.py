@@ -53,13 +53,6 @@ else:
         "Trump takes on Cruz, but lightly."
     ]
     text_input = st.selectbox("Pilih salah satu berita:", sample_news)
-#  footer
-footer = """
-<hr style="margin-top:30px; border-top: 1px solid #bbb;">
-<div style="text-align:center; color:#888888; font-size:14px;">
-    Developed by <strong>Dsloven Group 7</strong> – DS Batch 49
-</div>
-"""
 if st.button("🔍 Prediksi"):
     if text_input:
         text_tfidf = tfidf.transform([text_input])
@@ -91,6 +84,13 @@ if st.button("🔍 Prediksi"):
             """, unsafe_allow_html=True)
     else:
         st.warning("Silakan masukkan atau pilih teks berita terlebih dahulu.")
+#  footer
+footer = """
+<hr style="margin-top:30px; border-top: 1px solid #bbb;">
+<div style="text-align:center; color:#888888; font-size:14px;">
+    Developed by <strong>Dsloven Group 7</strong> – DS Batch 49
+</div>
+"""
 st.markdown(footer, unsafe_allow_html=True)
 
 
