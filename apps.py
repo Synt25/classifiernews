@@ -1,13 +1,16 @@
 import streamlit as st
 import joblib
 
-model = joblib.load('pac_model.joblib')
-vectorizer = joblib.load('tfidf_vectorizer.joblib')
+# Load model dan vectorizer
+model = joblib.load("pac_model.joblib")
+vectorizer = joblib.load("tfidf_vectorizer.joblib")
 
+# Setup halaman
 st.set_page_config(page_title="Fake News Detector", page_icon="📰", layout="centered")
 st.markdown("<h1 style='text-align:center;'>📰 Fake News Detection</h1>", unsafe_allow_html=True)
 
-# Fungsi deteksi metadata otomatis
+# Fungsi deteksi metadata
+
 def detect_country(text):
     text = text.lower()
     if any(loc in text for loc in ["jakarta", "indonesia"]):
@@ -49,51 +52,50 @@ else:
     ]
     text_input = st.selectbox("Pilih salah satu berita:", sample_news)
 
+# Prediksi saat tombol ditekan
 if st.button("🔍 Prediksi"):
     if text_input:
         text_tfidf = vectorizer.transform([text_input])
         pred = model.predict(text_tfidf)[0]
 
-        # Tampilkan hasil mentah untuk debugging
+        # Tampilkan hasil mentah
         st.write(f"Hasil mentah prediksi: {pred}")
 
-        
-        # Normalisasi label hasil prediksi
-try:
-    pred_str = str(pred).strip().lower()
-    if pred_str in ["fake", "real"]:
-        label_text = pred_str.upper()
-    else:
-        label_text = "FAKE" if pred == 0 else "REAL"
-except:
-    label_text = "UNKNOWN"
+        # Normalisasi label
+        try:
+            pred_str = str(pred).strip().lower()
+            if pred_str in ["fake", "real"]:
+                label_text = pred_str.upper()
+            else:
+                label_text = "FAKE" if pred == 0 else "REAL"
+        except:
+            label_text = "UNKNOWN"
 
-# Deteksi metadata otomatis
-country = detect_country(text_input)
-category = detect_category(text_input)
+        # Metadata
+        country = detect_country(text_input)
+        category = detect_category(text_input)
 
-# Tampilkan hasil prediksi
-if label_text == "FAKE":
-    color = "#ffc0cb"  # pastel pink
-    label = "🚨 Berita ini terdeteksi sebagai: <b>FAKE</b>"
-else:
-    color = "#ccffcc"  # mint green
-    label = "✅ Berita ini terdeteksi sebagai: <b>REAL</b>"
+        # Tampilan hasil
+        if label_text == "FAKE":
+            color = "#ffc0cb"
+            label = "🚨 Berita ini terdeteksi sebagai: <b>FAKE</b>"
+        else:
+            color = "#ccffcc"
+            label = "✅ Berita ini terdeteksi sebagai: <b>REAL</b>"
 
- st.markdown(f"""
+        st.markdown(f"""
             <div style='background-color:{color};padding:15px;border-radius:10px'>
             <h3 style='text-align:center;'>{label}</h3></div>
         """, unsafe_allow_html=True)
 
-        # Tampilkan metadata
-st.markdown("### 🧾 Informasi Tambahan (Deteksi Otomatis)")
-st.markdown(
-            f"""
+        # Metadata info
+        st.markdown("### 🧾 Informasi Tambahan (Deteksi Otomatis)")
+        st.markdown(f"""
             <p>📍 <b>Negara Asal:</b> <code>{country}</code><br>
             📚 <b>Kategori:</b> <code>{category}</code></p>
-            """, unsafe_allow_html=True)
-else:
-st.warning("Silakan masukkan atau pilih teks berita terlebih dahulu.")
+        """, unsafe_allow_html=True)
+    else:
+        st.warning("Silakan masukkan atau pilih teks berita terlebih dahulu.")
 
 # Footer
 footer = """
