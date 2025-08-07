@@ -53,6 +53,15 @@ if st.button("🔍 Prediksi"):
         text_tfidf = vectorizer.transform([text_input])
         pred = model.predict(text_tfidf)[0]
 
+        # Tampilkan hasil mentah untuk debugging
+        st.write(f"Hasil mentah prediksi: {pred}")
+
+        # Normalisasi label hasil prediksi
+        if isinstance(pred, int) or isinstance(pred, float):
+            label_text = "FAKE" if pred == 0 else "REAL"
+        else:
+            label_text = pred.upper()
+
         # Deteksi metadata otomatis
         country = detect_country(text_input)
         category = detect_category(text_input)
