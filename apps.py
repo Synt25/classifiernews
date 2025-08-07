@@ -50,7 +50,7 @@ else:
     text_input = st.selectbox("Pilih salah satu berita:", sample_news)
 if st.button("🔍 Prediksi"):
     if text_input:
-        text_tfidf = tfidf.transform([text_input])
+        text_tfidf = vectorizer.transform([text_input])
         pred = model.predict(text_tfidf)[0]
 
         # Deteksi metadata otomatis
