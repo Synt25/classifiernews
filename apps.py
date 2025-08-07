@@ -68,9 +68,9 @@ try:
 except:
     label_text = "UNKNOWN"
 
-        # Deteksi metadata otomatis
-        country = detect_country(text_input)
-        category = detect_category(text_input)
+# Deteksi metadata otomatis
+country = detect_country(text_input)
+category = detect_category(text_input)
 
         # Tampilkan hasil prediksi
         if label_text == "FAKE":
