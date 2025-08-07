@@ -6,7 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 # Load model dan vectorizer
 with open("pac_model.pkl", "rb") as f:
     model = pickle.load(f)
-with open("tfidf_vectorizer(1).pkl", "rb") as f:
+with open("tfidf_vectorizer_update.pkl", "rb") as f:
     tfidf = pickle.load(f)
 
 st.set_page_config(page_title="Fake News Detector",page_icon="📰", layout="centered")
