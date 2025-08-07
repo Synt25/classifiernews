@@ -1,13 +1,8 @@
 import streamlit as st
-import pickle
-import os
-from sklearn.feature_extraction.text import TfidfVectorizer
+import joblib
 
-# Load model dan vectorizer
-with open("pac_model.pkl", "rb") as f:
-    model = pickle.load(f)
-with open("tfidf_vectorizer_update.pkl", "rb") as f:
-    tfidf = pickle.load(f)
+model = joblib.load('pac_model.joblib')
+vectorizer = joblib.load('tfidf_vectorizer.joblib')
 
 st.set_page_config(page_title="Fake News Detector",page_icon="📰", layout="centered")
 st.markdown("<h1 style='text-align:center;'>📰 Fake News Detection</h1>", unsafe_allow_html=True)
