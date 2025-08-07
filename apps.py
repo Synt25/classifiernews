@@ -57,11 +57,16 @@ if st.button("🔍 Prediksi"):
         # Tampilkan hasil mentah untuk debugging
         st.write(f"Hasil mentah prediksi: {pred}")
 
+        
         # Normalisasi label hasil prediksi
-        if isinstance(pred, int) or isinstance(pred, float):
-            label_text = "FAKE" if pred == 0 else "REAL"
-        else:
-            label_text = pred.upper()
+try:
+    pred_str = str(pred).strip().lower()
+    if pred_str in ["fake", "real"]:
+        label_text = pred_str.upper()
+    else:
+        label_text = "FAKE" if pred == 0 else "REAL"
+except:
+    label_text = "UNKNOWN"
 
         # Deteksi metadata otomatis
         country = detect_country(text_input)
