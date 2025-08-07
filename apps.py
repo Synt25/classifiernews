@@ -72,28 +72,28 @@ except:
 country = detect_country(text_input)
 category = detect_category(text_input)
 
-        # Tampilkan hasil prediksi
-        if label_text == "FAKE":
-            color = "#ffc0cb"  # pastel pink
-            label = "🚨 Berita ini terdeteksi sebagai: <b>FAKE</b>"
-        else:
-            color = "#ccffcc"  # mint green
-            label = "✅ Berita ini terdeteksi sebagai: <b>REAL</b>"
+# Tampilkan hasil prediksi
+if label_text == "FAKE":
+    color = "#ffc0cb"  # pastel pink
+    label = "🚨 Berita ini terdeteksi sebagai: <b>FAKE</b>"
+else:
+    color = "#ccffcc"  # mint green
+    label = "✅ Berita ini terdeteksi sebagai: <b>REAL</b>"
 
-        st.markdown(f"""
+ st.markdown(f"""
             <div style='background-color:{color};padding:15px;border-radius:10px'>
             <h3 style='text-align:center;'>{label}</h3></div>
         """, unsafe_allow_html=True)
 
         # Tampilkan metadata
-        st.markdown("### 🧾 Informasi Tambahan (Deteksi Otomatis)")
-        st.markdown(
+st.markdown("### 🧾 Informasi Tambahan (Deteksi Otomatis)")
+st.markdown(
             f"""
             <p>📍 <b>Negara Asal:</b> <code>{country}</code><br>
             📚 <b>Kategori:</b> <code>{category}</code></p>
             """, unsafe_allow_html=True)
-    else:
-        st.warning("Silakan masukkan atau pilih teks berita terlebih dahulu.")
+else:
+st.warning("Silakan masukkan atau pilih teks berita terlebih dahulu.")
 
 # Footer
 footer = """
